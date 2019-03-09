@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Real Estate Listing Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="true">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                <a class="navbar-brand" href="index.html">Home</a>
+            </div>
+            
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">        
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Plots <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="">Comparison</a></li>
+                    <li><a href="">Data</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container" id="jumbotron">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Comparison</h1>
+            <p>
+                Compare Real Estate data from different areas with graphs.
+            </p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <form method="POST" action="/comparison">
+        <div class="panel panel-default">
+            <div class="panel-heading">Graph Settings</div>
+            <div class="container" id="settings">
+                <div class="container col-md-3" id="line1">
+                    <div class="row margin-top-50">
+                        <div class="col-md-12">
+                            <aside class="filters">
+                                <!-- <div class="panel panel-default"> -->
+                                    <!-- <div class="panel-heading">Groupby:</div> -->
+                                    <!-- <div class="panel-body"> -->
+                                        <form method="POST" action="/comparison">
+                                            <div class="form-group">
+                                                <ul class="list-group" id="filters">
+                                                <li class="filter list-group-item">
+                                                    <label for="year_month"> Groupby:</label>
+                                                    <br>
+                                                    <input type="checkbox" name="groupby_year" value="year"> Year
+                                                    <br>
+                                                    <input type="checkbox" name="groupby_month" value="year"> Month
+                                                </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    <!-- </div> -->
+                                <!-- </div> -->
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <div class="container col-md-3" id="Display">
+                    <div class="row margin-top-50">
+                        <div class="col-md-12">
+                            <aside class="filters">
+                                <!-- <div class="panel panel-default"> -->
+                                    <!-- <div class="panel-heading">Display:</div> -->
+                                    <!-- <div class="panel-body"> -->
+                                        <form method="POST" action="/comparison">
+                                            <div class="form-group">
+                                                <ul class="list-group" id="filters">
+                                                <li class="filter list-group-item">
+                                                    <label for="city4">Display</label>
+                                                    <br>
+                                                    <input type="checkbox" name="avg_listin_price" value="year"> Average Listing Price
+                                                    <br>
+                                                    <input type="checkbox" name="median_listing_price" value="year"> Median Listing Price
+                                                    <br>
+                                                    <input type="checkbox" name="new_listing_count" value="year"> New Listing Count
+                                                    <br>
+                                                    <input type="checkbox" name="total_listing_count" value="year"> Total Listing Count
+                                                </li>
+                                                </ul>
+                                            </div>
+                                        </form>
+                                    <!-- </div> -->
+                                <!-- </div> -->
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container" id="lines">
+                <div class="container col-md-3" id="line1">
+                    <div class="row margin-top-50">
+                        <div class="col-md-12">
+                            <aside class="filters">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Line 1</div>
+                                    <div class="panel-body">
+                                        <!-- <form method="POST" action="/comparison"> -->
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="zipcode1">Zipcode</label>
+                                                <input class="form-control" id="zipcode1" name="zipcode1" type="text" placeholder="78731">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="city4">City</label>
+                                                <input class="form-control" id="city1" name="city1" type="text" placeholder="austin">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="state1">State</label>
+                                                <!-- <select name="state1" id="sel-state1"></select> -->
+                                                <input class="form-control" id="sel-state1" name="state1" type="text" placeholder="tx">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <!-- <button id="graph-btn" type="submit" class="btn btn-default">Get Graph</button> -->
+                                        <!-- </form> -->
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container col-md-3" id="line2">
+                    <div class="row margin-top-50">
+                        <div class="col-md-12">
+                            <aside class="filters">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Line 2</div>
+                                    <div class="panel-body">
+                                        <!-- <form method="POST" action="/comparison"> -->
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="zipcode2">Zipcode</label>
+                                                <input class="form-control" id="zipcode2" name="zipcode2" type="text" placeholder="78731">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="city2">City</label>
+                                                <input class="form-control" id="city2" name="city2" type="text" placeholder="austin">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="state2">State</label>
+                                                <!-- <select name="state2" id="sel-state2"></select> -->
+                                                <input class="form-control" id="sel-state2" name="state2" type="text" placeholder="tx">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <!-- </form> -->
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container col-md-3" id="line3">
+                        <div class="row margin-top-50">
+                            <div class="col-md-12">
+                                <aside class="filters">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">Line 3</div>
+                                        <div class="panel-body">
+                                            <!-- <form method="POST" action="/comparison"> -->
+                                            <div class="form-group">
+                                                <ul class="list-group" id="filters">
+                                                <li class="filter list-group-item">
+                                                    <label for="zipcode3">Zipcode</label>
+                                                    <input class="form-control" id="zipcode3" name="zipcode3" type="text" placeholder="78731">
+                                                </li>
+                                                </ul>
+                                            </div>
+                                            <div class="form-group">
+                                                <ul class="list-group" id="filters">
+                                                <li class="filter list-group-item">
+                                                    <label for="city3">City</label>
+                                                    <input class="form-control" id="city3" name="city3" type="text" placeholder="austin">
+                                                </li>
+                                                </ul>
+                                            </div>
+                                            <div class="form-group">
+                                                <ul class="list-group" id="filters">
+                                                <li class="filter list-group-item">
+                                                    <label for="state3">State</label>
+                                                    <!-- <select name="state3" id="sel-state3"></select> -->
+                                                    <input class="form-control" id="sel-state3" name="state3" type="text" placeholder="tx">
+                                                </li>
+                                                </ul>
+                                            </div>
+                                        <!-- </form> -->
+                                        </div>
+                                    </div>
+                                </aside>
+                            </div>
+                        </div>
+                </div>
+
+                <div class="container col-md-3" id="line4">
+                    <div class="row margin-top-50">
+                        <div class="col-md-12">
+                            <aside class="filters">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Line 4</div>
+                                    <div class="panel-body">
+                                        <!-- <form method="POST" action="/comparison"> -->
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="zipcode4">Zipcode</label>
+                                                <input class="form-control" id="zipcode4" name="zipcode4" type="text" placeholder="78731">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="city4">City</label>
+                                                <input class="form-control" id="city4" name="city4" type="text" placeholder="austin">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group">
+                                            <ul class="list-group" id="filters">
+                                            <li class="filter list-group-item">
+                                                <label for="state4">State</label>
+                                                <!-- <select name="state4" id="sel-state4"></select> -->
+                                                <input class="form-control" id="sel-state4" name="state4" type="text" placeholder="tx">
+                                            </li>
+                                            </ul>
+                                        </div>
+                                        <!-- </form> -->
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            <button id="graph-btn" type="submit" class="btn btn-default">Get Graph</button>
+            </div>
+        </div>
+        <div id="plot"></div>
+        </form>
+    </div>
+    
+
+    <br>
+    <div class="col-md-12" id="footer">
+        <footer class="page-footer font-small">
+        <div class="footer-copyright text-center">
+            © Michael Kung 2019
+            <br>
+            *All Real Estate data is collected from: https://www.realtor.com/research/data/
+        </div>
+        </footer>
+    </div>
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='graph.js') }}"></script>
+    
+
+</body>
+
+
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Real Estate Listing Data</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'style.css') }}">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse-1" aria-expanded="true">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                <a class="navbar-brand" href="index.html">Home</a>
+            </div>
+            
+            <div class="collapse navbar-collapse" id="navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">        
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Plots <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                            <li><a href="">asdfasdf</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/comparison">Comparison</a></li>
+                    <li><a href="">Data</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Real Estate Listing Data</h1>
+            <p>
+                Use the filter to gather Real Estate listing data on a specific region of the United States.
+            </p>
+        </div>
+    </div>
+    
+    <div class="container col-md-2">
+        <div class="row margin-top-50">
+            <div class="col-md-12">
+                <aside class="filters">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Filter Search</div>
+                        <div class="panel-body">
+                            <form method="POST" action="/">
+                            <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">Zipcode</label>
+                                    <input class="form-control" id="zipcode" name="zipcode" type="text" placeholder="78731">
+                                </li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">City</label>
+                                    <input class="form-control" id="city" name="city" type="text" placeholder="austin">
+                                </li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">State</label>
+                                    <!-- <select name="state" id="sel-state"></select> -->
+                                    <input class="form-control" id="sel-state" name="state" type="text" placeholder="tx">
+                                </li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">Year</label>
+                                    <input class="form-control" id="sel-year" name="year" type="text" placeholder="2018">
+                                    <!-- <select name="year" id="sel-year"></select> -->
+                                </li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">Month</label>
+                                    <input class="form-control" id="sel-month" name="month" type="text" placeholder="01">
+                                    <!-- <select name="month" id="sel-month">
+                                        <option value="jan"> 01 </option>
+                                        <option value="feb"> 02 </option>
+                                        <option value="mar"> 03 </option>
+                                        <option value="apr"> 04 </option>
+                                        <option value="may"> 05 </option>
+                                        <option value="jun"> 06 </option>
+                                        <option value="jul"> 07 </option>
+                                        <option value="aug"> 08 </option>
+                                        <option value="sep"> 09 </option>
+                                        <option value="oct"> 10 </option>
+                                        <option value="nov"> 11 </option>
+                                        <option value="dec"> 12 </option>
+                                    </select> -->
+                                </li>
+                                </ul>
+                            </div>
+                            <!-- <div class="form-group">
+                                <ul class="list-group" id="filters">
+                                <li class="filter list-group-item">
+                                    <label for="date">Price</label>
+                                    <select name="price" id="sel-price">
+                                        <option value="<250k"> < $250,000 </option>
+                                        <option value="<500k"> < $500,000 </option>
+                                        <option value=">500k"> > $500,000 </option>
+                                    </select>
+                                </li>
+                                </ul>
+                            </div> -->
+                            <button id="filter-btn" type="submit" class="btn btn-default">Filter Table</button>
+                            <button id="clear-btn" type="submit" class="btn btn-default">Clear Filter</button>
+                            </form>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div id="table-area" class="">
+          <table id="ufo-table" class="table table-striped">
+            <thead>
+              <tr>
+                <th class="table-head">Zipcode</th>
+                <th class="table-head">City</th>
+                <th class="table-head">State</th>
+                <th class="table-head">Month/Year</th>
+                <th class="table-head">Median Listing Price</th>
+                <th class="table-head">Average Listing Price</th>
+                <th class="table-head">New Listing Count</th>
+                <th class="table-head">Total Listing Count</th>
+                <th class="table-head">Days on Market Listing Count</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+    </div>
+    <br>
+    <div class="col-md-12" id="footer">
+        <footer class="page-footer font-small">
+        <div class="footer-copyright text-center">
+            © Michael Kung 2019
+            <br>
+            *All Real Estate data is collected from: https://www.realtor.com/research/data/
+        </div>
+        </footer>
+    </div>
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+
+
+</body>
+
+
+
+</html>
