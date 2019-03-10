@@ -8,6 +8,8 @@ from flask import (
     redirect)
 import pandas as pd
 
+from sqlfilter import get_all_data, data_filter
+
 #################################################
 # Flask Setup
 #################################################
@@ -26,6 +28,12 @@ db = SQLAlchemy(app)
 import sqlalchemy
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func, Column, Integer, String, Float
+
+###### Added to connected fitlered data to sqlite ######
+engine = create_engine("sqlite:///realtor.sqlite")
+conn = engine.connect()
+from sqlalchemy.ext.declarative import declarative_base
+
 
 class Data(db.Model):
   __tablename__ = "data"
@@ -149,6 +157,9 @@ def filter():
 
 @app.route("/comparison", methods=["GET", "POST"])
 def graphs():
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+
     if request.method == "POST":
         filter_inputs1 = {
             "zipcode": request.form["zipcode1"],
@@ -156,19 +167,19 @@ def graphs():
             "state": request.form["state1"],
         }
         print(f"line1 filters: {filter_inputs1}")
-        # if filter_inputs1[zipcode] != "" or filter_inputs1[city] != "" or filter_inputs1[state] != "":
         if filter_inputs1["zipcode"] != "" or filter_inputs1["city"] != "" or filter_inputs1["state"] != "":
-            filter_string1 = ""
-            for key, value in filter_inputs1.items():
-                if value != "" and filter_string1 == "":
-                    filter_string1 += f"WHERE {key} = '{value}'"
-                elif value != "" and filter_string1 != "":
-                    filter_string1 += f" AND {key} = '{value}'"
-            
-            print(f"line 1 query: SELECT * FROM data {filter_string1}")
-            conn = db.engine.connect().connection
-            filtered_df = pd.read_sql(f"SELECT * FROM data {filter_string1};", conn)
-            filtered_df.to_sql(compare1.__tablename__,conn, index=False, if_exists="replace")
+        
+            line1_data = get_all_data("data")
+            if filter_inputs1["zipcode"] != "":
+                line1_data = data_filter(line1_data, "zipcode", filter_inputs1["zipcode"])
+            if filter_inputs1["city"] != "":
+                line1_data = data_filter(line1_data, "city", filter_inputs1["city"])
+            if filter_inputs1["state"] != "":
+                line1_data = data_filter(line1_data, "state", filter_inputs1["state"])
+
+            filtered1_df = pd.DataFrame(line1_data)
+            # print(filtered1_df)
+            filtered1_df.to_sql(compare1.__tablename__,conn, index=False, if_exists="replace")
         # else:
             
 
@@ -179,17 +190,17 @@ def graphs():
         }
         print(f"line2 filters: {filter_inputs2}")
         if filter_inputs2["zipcode"] != "" or filter_inputs2["city"] != "" or filter_inputs2["state"] != "":
-            filter_string2= ""
-            for key, value in filter_inputs2.items():
-                if value != "" and filter_string2 == "":
-                    filter_string2 += f"WHERE {key} = '{value}'"
-                elif value != "" and filter_string2 != "":
-                    filter_string2 += f" AND {key} = '{value}'"
             
-            print(f"line 2 query: SELECT * FROM data {filter_string2}")
-            conn = db.engine.connect().connection
-            filtered_df = pd.read_sql(f"SELECT * FROM data {filter_string2};", conn)
-            filtered_df.to_sql(compare2.__tablename__,conn, index=False, if_exists="replace")
+            line2_data = get_all_data("data")
+            if filter_inputs2["zipcode"] != "":
+                line2_data = data_filter(line2_data, "zipcode", filter_inputs2["zipcode"])
+            if filter_inputs2["city"] != "":
+                line2_data = data_filter(line2_data, "city", filter_inputs2["city"])
+            if filter_inputs2["state"] != "":
+                line2_data = data_filter(line2_data, "state", filter_inputs2["state"])
+            # print(f"line 2 data: {line2_data}")
+            filtered2_df = pd.DataFrame(line2_data)
+            filtered2_df.to_sql(compare2.__tablename__,conn, index=False, if_exists="replace")
        
 
         filter_inputs3 = {
@@ -199,17 +210,18 @@ def graphs():
         }
         print(f"line3 filters: {filter_inputs3}")
         if filter_inputs3["zipcode"] != "" or filter_inputs3["city"] != "" or filter_inputs3["state"] != "":
-            filter_string3 = ""
-            for key, value in filter_inputs3.items():
-                if value != "" and filter_string3 == "":
-                    filter_string3 += f"WHERE {key} = '{value}'"
-                elif value != "" and filter_string3 != "":
-                    filter_string3 += f" AND {key} = '{value}'"
-            
-            print(f"line 3 query: SELECT * FROM data {filter_string3}")
-            conn = db.engine.connect().connection
-            filtered_df = pd.read_sql(f"SELECT * FROM data {filter_string3};", conn)
-            filtered_df.to_sql(compare3.__tablename__,conn, index=False, if_exists="replace")
+
+            line3_data = get_all_data("data")
+            if filter_inputs3["zipcode"] != "":
+                line3_data = data_filter(line3_data, "zipcode", filter_inputs3["zipcode"])
+            if filter_inputs3["city"] != "":
+                line3_data = data_filter(line3_data, "city", filter_inputs3["city"])
+            if filter_inputs3["state"] != "":
+                line3_data = data_filter(line3_data, "state", filter_inputs3["state"])
+
+            # print(f"line 3 data: {line3_data}")
+            filtered3_df = pd.DataFrame(line3_data)
+            filtered3_df.to_sql(compare3.__tablename__,conn, index=False, if_exists="replace")
         
 
         filter_inputs4 = {
@@ -219,17 +231,18 @@ def graphs():
         }
         print(f"line4 filters: {filter_inputs4}")
         if filter_inputs4["zipcode"] != "" or filter_inputs4["city"] != "" or filter_inputs4["state"] != "":
-            filter_string4 = ""
-            for key, value in filter_inputs4.items():
-                if value != "" and filter_string4 == "":
-                    filter_string4 += f"WHERE {key} = '{value}'"
-                elif value != "" and filter_string4 != "":
-                    filter_string4 += f" AND {key} = '{value}'"
-            
-            print(f"line 4 query: SELECT * FROM data {filter_string4}")
-            conn = db.engine.connect().connection
-            filtered_df = pd.read_sql(f"SELECT * FROM data {filter_string4};", conn)
-            filtered_df.to_sql(compare4.__tablename__,conn, index=False, if_exists="replace")
+
+            line4_data = get_all_data("data")
+            if filter_inputs4["zipcode"] != "":
+                line4_data = data_filter(line4_data, "zipcode", filter_inputs4["zipcode"])
+            if filter_inputs4["city"] != "":
+                line4_data = data_filter(line4_data, "city", filter_inputs4["city"])
+            if filter_inputs4["state"] != "":
+                line4_data = data_filter(line4_data, "state", filter_inputs4["state"])
+
+            # print(f"line 4 data: {line4_data}")
+            filtered4_df = pd.DataFrame(line4_data)
+            filtered4_df.to_sql(compare4.__tablename__,conn, index=False, if_exists="replace")
         return redirect("/comparison", code=302)
     return render_template("comparison.html")
     
@@ -237,120 +250,119 @@ def graphs():
 
 @app.route("/api/filtered")
 def filter_data():
-    conn = db.engine.connect().connection
-    df = pd.read_sql(f"SELECT * FROM filtered_data;", conn)
-    data = []
-    for i in range(len(df)):
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+    filtered_df = pd.read_sql("SELECT * FROM filtered_data;",conn)
+
+    filtered_data = []
+    for i in range(len(filtered_df)):
         zip_data = {
-            # "month" : df.month.values.tolist(),
-            # "year" : df.year.values.tolist(),
-            "zipcode" : str(df.zipcode[i]),
-            "city" : df.city.values[i],
-            "state" : df.state.values[i],
-            "year_month" : str(df.year_month[i]),
-            "median_price" : int(df.median_listing_price[i]),
-            "avg_price" : int(df.avg_listing_price[i]),
-            "new_count" : int(df.new_listing_count[i]),
-            "total_count" : int(df.total_listing_count[i]),
-            "days_on_market" : int(df.days_on_market[i])
+            "zipcode" : str(filtered_df.zipcode[i]),
+            "city" : filtered_df.city.values[i],
+            "state" : filtered_df.state.values[i],
+            "year_month" : str(filtered_df.year_month[i]),
+            "median_price" : int(filtered_df.median_listing_price[i]),
+            "avg_price" : int(filtered_df.avg_listing_price[i]),
+            "new_count" : int(filtered_df.new_listing_count[i]),
+            "total_count" : int(filtered_df.total_listing_count[i]),
+            "days_on_market" : int(filtered_df.days_on_market[i])
         }
-        data.append(zip_data)
-    print(data[0])
-    return jsonify(data)
+        filtered_data.append(zip_data)
+    print(filtered_data[0])
+    return jsonify(filtered_data)
 
 @app.route("/api/compare1")
 def compare_data1():
-    conn = db.engine.connect().connection
-    df = pd.read_sql(f"SELECT * FROM compare1;", conn)
-    data = []
-    for i in range(len(df)):
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+    line1_df = pd.read_sql("SELECT * FROM compare1;",conn)
+
+    line1_data = []
+    for i in range(len(line1_df)):
         zip_data = {
-            # "month" : df.month.values.tolist(),
-            # "year" : df.year.values.tolist(),
-            "zipcode" : str(df.zipcode[i]),
-            "city" : df.city.values[i],
-            "state" : df.state.values[i],
-            "year_month" : str(df.year_month[i]),
-            "median_price" : int(df.median_listing_price[i]),
-            "avg_price" : int(df.avg_listing_price[i]),
-            "new_count" : int(df.new_listing_count[i]),
-            "total_count" : int(df.total_listing_count[i]),
-            "days_on_market" : int(df.days_on_market[i])
+            "zipcode" : str(line1_df.zipcode[i]),
+            "city" : line1_df.city.values[i],
+            "state" : line1_df.state.values[i],
+            "year_month" : str(line1_df.year_month[i]),
+            "median_price" : int(line1_df.median_price[i]),
+            "avg_price" : int(line1_df.avg_price[i]),
+            "new_count" : int(line1_df.new_count[i]),
+            "total_count" : int(line1_df.total_count[i]),
+            "days_on_market" : int(line1_df.days_on_market[i])
         }
-        data.append(zip_data)
-    print(data[0])
-    return jsonify(data)
+        line1_data.append(zip_data)
+    print(line1_data[0])
+    return jsonify(line1_data)
 
 @app.route("/api/compare2")
 def compare_data2():
-    conn = db.engine.connect().connection
-    df = pd.read_sql(f"SELECT * FROM compare2;", conn)
-    data = []
-    for i in range(len(df)):
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+    line2_df = pd.read_sql("SELECT * FROM compare2;",conn)
+
+    line2_data = []
+    for i in range(len(line2_df)):
         zip_data = {
-            # "month" : df.month.values.tolist(),
-            # "year" : df.year.values.tolist(),
-            "zipcode" : str(df.zipcode[i]),
-            "city" : df.city.values[i],
-            "state" : df.state.values[i],
-            "year_month" : str(df.year_month[i]),
-            "median_price" : int(df.median_listing_price[i]),
-            "avg_price" : int(df.avg_listing_price[i]),
-            "new_count" : int(df.new_listing_count[i]),
-            "total_count" : int(df.total_listing_count[i]),
-            "days_on_market" : int(df.days_on_market[i])
+            "zipcode" : str(line2_df.zipcode[i]),
+            "city" : line2_df.city.values[i],
+            "state" : line2_df.state.values[i],
+            "year_month" : str(line2_df.year_month[i]),
+            "median_price" : int(line2_df.median_price[i]),
+            "avg_price" : int(line2_df.avg_price[i]),
+            "new_count" : int(line2_df.new_count[i]),
+            "total_count" : int(line2_df.total_count[i]),
+            "days_on_market" : int(line2_df.days_on_market[i])
         }
-        data.append(zip_data)
-    print(data[0])
-    return jsonify(data)
+        line2_data.append(zip_data)
+    print(line2_data[0])
+    return jsonify(line2_data)
 
 
 @app.route("/api/compare3")
 def compare_data3():
-    conn = db.engine.connect().connection
-    df = pd.read_sql(f"SELECT * FROM compare3;", conn)
-    data = []
-    for i in range(len(df)):
-        zip_data = {
-            # "month" : df.month.values.tolist(),
-            # "year" : df.year.values.tolist(),
-            "zipcode" : str(df.zipcode[i]),
-            "city" : df.city.values[i],
-            "state" : df.state.values[i],
-            "year_month" : str(df.year_month[i]),
-            "median_price" : int(df.median_listing_price[i]),
-            "avg_price" : int(df.avg_listing_price[i]),
-            "new_count" : int(df.new_listing_count[i]),
-            "total_count" : int(df.total_listing_count[i]),
-            "days_on_market" : int(df.days_on_market[i])
-        }
-        data.append(zip_data)
-    print(data[0])
-    return jsonify(data)
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+    line3_df = pd.read_sql("SELECT * FROM compare3;",conn)
 
+    line3_data = []
+    for i in range(len(line3_df)):
+        zip_data = {
+            "zipcode" : str(line3_df.zipcode[i]),
+            "city" : line3_df.city.values[i],
+            "state" : line3_df.state.values[i],
+            "year_month" : str(line3_df.year_month[i]),
+            "median_price" : int(line3_df.median_price[i]),
+            "avg_price" : int(line3_df.avg_price[i]),
+            "new_count" : int(line3_df.new_count[i]),
+            "total_count" : int(line3_df.total_count[i]),
+            "days_on_market" : int(line3_df.days_on_market[i])
+        }
+        line3_data.append(zip_data)
+    print(line3_data[0])
+    return jsonify(line3_data)
 
 @app.route("/api/compare4")
 def compare_data4():
-    conn = db.engine.connect().connection
-    df = pd.read_sql(f"SELECT * FROM compare4;", conn)
-    data = []
-    for i in range(len(df)):
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
+    line4_df = pd.read_sql("SELECT * FROM compare4;",conn)
+
+    line4_data = []
+    for i in range(len(line4_df)):
         zip_data = {
-            # "month" : df.month.values.tolist(),
-            # "year" : df.year.values.tolist(),
-            "zipcode" : str(df.zipcode[i]),
-            "city" : df.city.values[i],
-            "state" : df.state.values[i],
-            "year_month" : str(df.year_month[i]),
-            "median_price" : int(df.median_listing_price[i]),
-            "avg_price" : int(df.avg_listing_price[i]),
-            "new_count" : int(df.new_listing_count[i]),
-            "total_count" : int(df.total_listing_count[i]),
-            "days_on_market" : int(df.days_on_market[i])
+            "zipcode" : str(line4_df.zipcode[i]),
+            "city" : line4_df.city.values[i],
+            "state" : line4_df.state.values[i],
+            "year_month" : str(line4_df.year_month[i]),
+            "median_price" : int(line4_df.median_price[i]),
+            "avg_price" : int(line4_df.avg_price[i]),
+            "new_count" : int(line4_df.new_count[i]),
+            "total_count" : int(line4_df.total_count[i]),
+            "days_on_market" : int(line4_df.days_on_market[i])
         }
-        data.append(zip_data)
-    print(data[0])
-    return jsonify(data)
+        line4_data.append(zip_data)
+    print(line4_data[0])
+    return jsonify(line4_data)
     
 
 
