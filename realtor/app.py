@@ -133,6 +133,8 @@ def home():
 
 @app.route("/", methods=["GET", "POST"])
 def filter():
+    engine = create_engine("sqlite:///realtor.sqlite")
+    conn = engine.connect()
     if request.method == "POST":
         filter_inputs = {
             "zipcode": request.form["zipcode"],
@@ -140,18 +142,24 @@ def filter():
             "state": request.form["state"],
             "year": request.form["year"]
         }
-        filter_string = ""
-        print(filter_inputs)
-        for key, value in filter_inputs.items():
-            if value != "" and filter_string == "":
-                filter_string += f"WHERE {key} = {value}"
-            elif value != "" and filter_string != "":
-                filter_string += f" AND {key} = {value}"
         
-        print(f"SELECT * FROM data {filter_string}")
-        conn = db.engine.connect().connection
-        filtered_df = pd.read_sql(f"SELECT * FROM data {filter_string};", conn)
+        print(f"Data filters: {filter_inputs}")
+        if filter_inputs["zipcode"] != "" or filter_inputs["city"] != "" or filter_inputs["state"] != "":
+        
+            line1_data = get_all_data("data")
+            if filter_inputs["zipcode"] != "":
+                line1_data = data_filter(line1_data, "zipcode", filter_inputs["zipcode"])
+            if filter_inputs["city"] != "":
+                line1_data = data_filter(line1_data, "city", filter_inputs["city"])
+            if filter_inputs["state"] != "":
+                line1_data = data_filter(line1_data, "state", filter_inputs["state"])
+            if filter_inputs["year"] != "":
+                line1_data = data_filter(line1_data, "year", filter_inputs["year"])
+
+        filtered_df = pd.DataFrame(line1_data)
+        # print(filtered1_df)
         filtered_df.to_sql(filtered_data.__tablename__,conn, index=False, if_exists="replace")
+
         return redirect("/", code=302)
     return render_template("index.html")
 
